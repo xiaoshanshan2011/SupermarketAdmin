@@ -33,7 +33,7 @@ export function getFenrunList(temp) {
     method: 'get',
     params: {
       size: temp.size,
-      page: temp.page - 1,
+      page: temp.page,
       cityId: temp.cityId,
       deviceId: temp.deviceId,
       deviceTypeId: temp.deviceTypeId,
@@ -76,7 +76,7 @@ export function applyList(temp) {
     method: 'get',
     params: {
       size: temp.size,
-      page: temp.page - 1
+      page: temp.page
     }
   })
 }

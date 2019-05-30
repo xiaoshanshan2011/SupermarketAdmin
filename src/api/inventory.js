@@ -7,7 +7,7 @@ export function getInventoryList(temp) {
     method: 'get',
     params: {
       size: temp.size,
-      page: temp.page - 1,
+      page: temp.page,
       inventoryType: temp.inventoryType,
       keyword: temp.keyword
     }

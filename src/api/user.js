@@ -7,7 +7,7 @@ export function frUserList(temp) {
     method: 'get',
     params: {
       limit: temp.limit,
-      page: temp.page - 1,
+      page: temp.page,
       keyword: temp.keyword
     }
   })
@@ -32,7 +32,7 @@ export function wxUserList(temp) {
     method: 'get',
     params: {
       limit: temp.limit,
-      page: temp.page - 1,
+      page: temp.page,
       keyword: temp.keyword
     }
   })

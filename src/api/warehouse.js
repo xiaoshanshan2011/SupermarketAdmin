@@ -87,7 +87,7 @@ export function getProduct(temp) {
     method: 'get',
     params: {
       limit: temp.limit,
-      page: temp.page - 1,
+      page: temp.page,
       keyword: temp.keyword
     }
   })

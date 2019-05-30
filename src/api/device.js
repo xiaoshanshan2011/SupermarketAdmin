@@ -6,7 +6,7 @@ export function getDeviceList(params) {
     method: 'get',
     params: {
       limit: params.limit,
-      offset: params.page - 1,
+      offset: params.page,
       deviceId: params.deviceId
     }
   })

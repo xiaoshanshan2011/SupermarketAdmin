@@ -19,7 +19,7 @@ export function getApplyList(temp) {
     method: 'get',
     params: {
       size: temp.size,
-      page: temp.page - 1,
+      page: temp.page,
       status: temp.status,
       keyword: temp.keyword
     }
@@ -53,7 +53,7 @@ export function getFinancialList(temp) {
     method: 'get',
     params: {
       size: temp.size,
-      page: temp.page - 1,
+      page: temp.page,
       keyword: temp.keyword
     }
   })

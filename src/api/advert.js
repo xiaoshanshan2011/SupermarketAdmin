@@ -9,7 +9,7 @@ export function advertList(temp) {
       keyword: temp.keyword,
       size: temp.limit,
       state: temp.state,
-      page: temp.page - 1
+      page: temp.page
     }
   })
 }
@@ -72,7 +72,7 @@ export function slideList(temp) {
     method: 'get',
     params: {
       limit: temp.limit,
-      offset: temp.page - 1,
+      offset: temp.page,
       keyword: temp.keyword,
       type: temp.type
     }

@@ -9,7 +9,7 @@ export function getArticleList(listQuery) {
       articleType: listQuery.articleType, // 文章类型（1：活动 2：公益 3：其他)
       keyword: listQuery.keyword,
       size: listQuery.limit,
-      page: listQuery.page - 1
+      page: listQuery.page
     }
   })
 }

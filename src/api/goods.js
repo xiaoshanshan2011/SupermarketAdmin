@@ -49,7 +49,7 @@ export function addGoods(temp) {
   return request({
     url: '/api/admin/insertGoods',
     method: 'post',
-    data: {
+    params: {
       goodstype: temp.goodstype,
       barcode: temp.barcode,
       classifyid: temp.classifyid,
@@ -87,7 +87,7 @@ export function getProduct(temp) {
     method: 'get',
     params: {
       limit: temp.limit,
-      page: temp.page - 1,
+      page: temp.page,
       keyword: temp.keyword,
       classifyid: temp.classifyid,
       pclassifyid: temp.pclassifyid
@@ -100,7 +100,7 @@ export function editGoods(temp) {
   return request({
     url: '/api/admin/updateGoods',
     method: 'post',
-    data: {
+    params: {
       goodstype: temp.goodstype,
       goodscode: temp.goodscode,
       barcode: temp.barcode,

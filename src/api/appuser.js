@@ -9,7 +9,7 @@ export function getauditList(temp) {
       tel: temp.tel,
       audit: temp.select,
       limit: temp.limit,
-      page: temp.page - 1,
+      page: temp.page,
       time: new Date().getTime()
     }
   })

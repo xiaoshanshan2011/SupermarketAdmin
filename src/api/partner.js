@@ -7,7 +7,7 @@ export function getPartnerList(temp) {
     method: 'get',
     params: {
       size: temp.size,
-      page: temp.page - 1,
+      page: temp.page,
       tel: temp.tel,
       name: temp.name,
       idNumber: temp.idNumber,

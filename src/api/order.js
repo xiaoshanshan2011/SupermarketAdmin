@@ -19,7 +19,7 @@ export function getMachineList(temp) {
     method: 'get',
     params: {
       limit: temp.limit,
-      offset: temp.offset - 1,
+      offset: temp.offset,
       orderNumber: temp.orderNumber,
       storeName: temp.storeName,
       deviceTypeName: temp.deviceTypeName,
@@ -36,7 +36,7 @@ export function getAppraisesList(temp) {
     method: 'get',
     params: {
       size: temp.limit,
-      page: temp.page - 1,
+      page: temp.page,
       tasteScore: temp.tasteScore,
       keyword: temp.keyword
     }
@@ -50,7 +50,7 @@ export function getPotatoList(temp) {
     method: 'get',
     params: {
       limit: temp.limit,
-      page: temp.page - 1,
+      page: temp.page,
       status: temp.status,
       appUserId: temp.appUserId,
       keyword: temp.keyword
@@ -65,7 +65,7 @@ export function getPurchaseOrderList(temp) {
     method: 'get',
     params: {
       size: temp.limit,
-      page: temp.page - 1,
+      page: temp.page,
       orderType: temp.orderType,
       keyword: temp.keyword
     }
@@ -101,7 +101,7 @@ export function storeOrderList(temp) {
     url: '/admin/order/shop/order/list',
     method: 'get',
     params: {
-      page: temp.page - 1,
+      page: temp.page,
       size: temp.limit,
       keyword: temp.keyword,
       orderType: temp.orderType,

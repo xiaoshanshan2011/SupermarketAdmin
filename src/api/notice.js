@@ -40,7 +40,7 @@ export function getNoticeList(temp) {
       noticeTile: temp.noticeTile,
       noticeType: temp.noticeType,
       limit: temp.limit,
-      offset: temp.offset - 1
+      offset: temp.offset
     }
   })
 }

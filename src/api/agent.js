@@ -9,7 +9,7 @@ export function getAgentList(temp) {
       agentName: temp.companyName,
       agentTel: temp.companyTel,
       limit: temp.limit,
-      page: temp.page - 1
+      page: temp.page
     }
   })
 }
