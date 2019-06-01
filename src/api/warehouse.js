@@ -81,7 +81,7 @@ export function getProductType(parentid) {
 }
 
 // 仓库列表
-export function getProduct(temp) {
+export function selectWarehouse(temp) {
   return request({
     url: '/api/admin/selectWarehouse',
     method: 'get',

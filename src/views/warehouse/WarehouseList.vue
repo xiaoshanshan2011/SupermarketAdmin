@@ -27,57 +27,27 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="商品图片">
+      <el-table-column align="center" label="仓库图片" width="130px">
         <template slot-scope="scope">
-          <img :src="scope.row.goodsimg" style="height: 50px" @click="dialogPictureVisible = true,clickPicture = scope.row.picture">
+          <img :src="scope.row.warehouseimg" style="height: 50px" @click="dialogPictureVisible = true,clickPicture = scope.row.warehouseimg">
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="商品名称">
+      <el-table-column align="center" label="仓库名称">
         <template slot-scope="scope">
-          <span v-if="scope.row.goodsname.length <= 10">{{ scope.row.goodsname }}</span>
-          <span v-else>{{ scope.row.goodsname.substr(0, 10) }}...</span>
+          <span v-if="scope.row.warehousename.length <= 10">{{ scope.row.warehousename }}</span>
+          <span v-else>{{ scope.row.warehousename.substr(0, 10) }}...</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="商品编号">
+      <el-table-column align="center" label="仓库编号" width="100px">
         <template slot-scope="scope">
-          <span>{{ scope.row.goodscode }}</span>
+          <span>{{ scope.row.warehousesn }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="商品条码">
+      <el-table-column align="center" label="仓库地址">
         <template slot-scope="scope">
-          <span>{{ scope.row.barcode }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="商品单位">
-        <template slot-scope="scope">
-          <span>{{ scope.row.goodsunit }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="原价" width="80px">
-        <template slot-scope="scope">
-          <span>¥{{ scope.row.price }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="会员价" width="80px">
-        <template slot-scope="scope">
-          <span>¥{{ scope.row.vipprice }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="优惠价" width="80px">
-        <template slot-scope="scope">
-          <span>¥{{ scope.row.discountsprice }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="特卖价" width="80px">
-        <template slot-scope="scope">
-          <span>¥{{ scope.row.specialsaleprice }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="批发价" width="80px">
-        <template slot-scope="scope">
-          <span>¥{{ scope.row.wholesaleprice }}</span>
+          <span>{{ scope.row.province.areaname }} {{ scope.row.city.areaname }} {{ scope.row.district.areaname }} {{ scope.row.address }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间">
@@ -187,7 +157,7 @@
 
 <script>
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-import { getProductType, addGoods, getProduct, editGoods } from '@/api/warehouse'
+import { getProductType, addGoods, selectWarehouse, editGoods } from '@/api/warehouse'
 import { getFromData } from '@/utils/OssUtils'
 import { getWebOssToken } from '@/api/upload'
 import axios from 'axios'
@@ -435,7 +405,7 @@ export default {
     },
     // 查询商品
     reGetProduct() {
-      getProduct(this.listQuery).then(response => {
+      selectWarehouse(this.listQuery).then(response => {
         this.list = response.data.rows
         this.total = response.data.total
       })
