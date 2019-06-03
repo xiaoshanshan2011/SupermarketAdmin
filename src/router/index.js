@@ -324,16 +324,16 @@ export const asyncRouterMap = [
     meta: { title: '仓库管理', icon: 'order' },
     children: [
       {
-        path: 'warehouselist',
-        name: 'WarehouseList',
-        component: () => import('@/views/warehouse/WarehouseList'),
-        meta: { title: '仓库列表', icon: 'order' }
-      },
-      {
         path: 'warehouseuser',
         name: 'WarehouseUser',
         component: () => import('@/views/warehouse/WarehouseUser'),
         meta: { title: '仓库用户', icon: 'types' }
+      },
+      {
+        path: 'warehouselist',
+        name: 'WarehouseList',
+        component: () => import('@/views/warehouse/WarehouseList'),
+        meta: { title: '仓库列表', icon: 'order' }
       }
     ]
   },

@@ -45,6 +45,16 @@
           <span>{{ scope.row.goodscode }}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="一级分类">
+        <template slot-scope="scope">
+          <span>{{ scope.row.pclassify.name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="二级分类">
+        <template slot-scope="scope">
+          <span>{{ scope.row.classify.name }}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="商品条码">
         <template slot-scope="scope">
           <span>{{ scope.row.barcode }}</span>

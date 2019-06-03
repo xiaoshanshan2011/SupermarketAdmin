@@ -1,81 +1,19 @@
 import request from '@/utils/request'
 
-export function findType(temp) {
+// 添加仓库
+export function insertWarehouse(temp) {
   return request({
-    url: '/api/admin/selectGoodsClassify',
-    method: 'get',
-    params: {
-      parentid: temp.parentid
-    }
-  })
-}
-
-// 添加商品类型
-export function addType(temp) {
-  return request({
-    url: '/api/admin/insertGoodsClassify',
+    url: '/api/admin/insertWarehouse',
     method: 'post',
     data: {
-      name: temp.name,
-      parentid: temp.parentid
-    }
-  })
-}
-
-// 编辑商品类型
-export function editType(temp) {
-  return request({
-    url: '/api/admin/updateGoodsClassify',
-    method: 'post',
-    data: {
-      classifyid: temp.classifyid,
-      name: temp.name
-    }
-  })
-}
-// 删除商品类型
-export function deleteGoodsClassify(classifyid) {
-  return request({
-    url: '/api/admin/deleteGoodsClassify',
-    method: 'post',
-    params: {
-      classifyid: classifyid
-    }
-  })
-}
-
-// 添加商品
-export function addGoods(temp) {
-  return request({
-    url: '/api/admin/insertGoods',
-    method: 'post',
-    data: {
-      goodstype: temp.goodstype,
-      barcode: temp.barcode,
-      classifyid: temp.classifyid,
-      pclassifyid: temp.pclassifyid,
-      goodsname: temp.goodsname,
-      goodsimg: temp.goodsimg,
-      goodsunit: temp.goodsunit,
-      ishot: temp.ishot,
-      vipprice: temp.vipprice,
-      discountsprice: temp.discountsprice,
-      specialsaleprice: temp.specialsaleprice,
-      wholesaleprice: temp.wholesaleprice,
-      price: temp.price,
-      goodsdesc: temp.goodsdesc,
-      goodsspec: temp.goodsspec
-    }
-  })
-}
-
-// 获取多个商品类型的子商品类型
-export function getProductType(parentid) {
-  return request({
-    url: '/api/admin/selectGoodsClassify',
-    method: 'get',
-    params: {
-      parentid: parentid
+      warehousename: temp.warehousename,
+      warehouseimg: temp.warehouseimg,
+      warehousesn: temp.warehousesn,
+      provinceid: temp.provinceid,
+      cityid: temp.cityid,
+      districtid: temp.districtid,
+      address: temp.address,
+      warehousedesc: temp.warehousedesc
     }
   })
 }
@@ -88,33 +26,92 @@ export function selectWarehouse(temp) {
     params: {
       limit: temp.limit,
       page: temp.page,
+      keyword: temp.keyword,
+      provinceid: temp.provinceid,
+      cityid: temp.cityid,
+      districtid: temp.districtid
+    }
+  })
+}
+
+// 编辑仓库
+export function updateWarehouse(temp) {
+  return request({
+    url: '/api/admin/updateWarehouse',
+    method: 'post',
+    data: {
+      warehouseid: temp.warehouseid,
+      warehousename: temp.warehousename,
+      warehouseimg: temp.warehouseimg,
+      warehousesn: temp.warehousesn,
+      provinceid: temp.provinceid,
+      cityid: temp.cityid,
+      districtid: temp.districtid,
+      address: temp.address,
+      warehousedesc: temp.warehousedesc
+    }
+  })
+}
+
+// 查询仓库用户
+export function selectWarehouseUser(temp) {
+  return request({
+    url: '/api/admin/selectWarehouseUser',
+    method: 'get',
+    params: {
+      limit: temp.limit,
+      page: temp.page,
       keyword: temp.keyword
     }
   })
 }
 
-// 编辑商品
-export function editGoods(temp) {
+// 添加仓库用户
+export function insertWarehouseUser(temp) {
   return request({
-    url: '/api/admin/updateGoods',
+    url: '/api/admin/insertWarehouseUser',
     method: 'post',
-    data: {
-      goodstype: temp.goodstype,
-      goodscode: temp.goodscode,
-      barcode: temp.barcode,
-      classifyid: temp.classifyid,
-      pclassifyid: temp.pclassifyid,
-      goodsname: temp.goodsname,
-      goodsimg: temp.goodsimg,
-      goodsunit: temp.goodsunit,
-      ishot: temp.ishot,
-      vipprice: temp.vipprice,
-      discountsprice: temp.discountsprice,
-      specialsaleprice: temp.specialsaleprice,
-      wholesaleprice: temp.wholesaleprice,
-      price: temp.price,
-      goodsdesc: temp.goodsdesc,
-      goodsspec: temp.goodsspec
+    params: {
+      username: temp.username,
+      password: temp.password,
+      nickname: temp.nickname,
+      mobile: temp.mobile,
+      provinceid: temp.provinceid,
+      cityid: temp.cityid,
+      districtid: temp.districtid,
+      address: temp.address,
+      userphoto: temp.userphoto
+    }
+  })
+}
+
+// 编辑仓库用户
+export function updateWarehouseUser(temp) {
+  return request({
+    url: '/api/admin/updateWarehouseUser',
+    method: 'post',
+    params: {
+      userid: temp.userid,
+      username: temp.username,
+      password: temp.password,
+      nickname: temp.nickname,
+      mobile: temp.mobile,
+      provinceid: temp.provinceid,
+      cityid: temp.cityid,
+      districtid: temp.districtid,
+      address: temp.address,
+      userphoto: temp.userphoto
+    }
+  })
+}
+
+// 删除仓库用户
+export function deleteWarehouseUser(userid) {
+  return request({
+    url: '/api/admin/deleteWarehouseUser',
+    method: 'post',
+    params: {
+      userid: userid
     }
   })
 }

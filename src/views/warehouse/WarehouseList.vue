@@ -3,13 +3,16 @@
   <div class="app-container">
 
     <div class="filter-container">
-      <el-select v-model="listQuery.pclassifyid" style="width: 120px" class="filter-item" value-key="key" @change="classifyChange(1)">
-        <el-option v-for="item in pclassifyids" :key="item.classifyid" :label="item.name" :value="item.classifyid"/>
+      <el-select v-model="listQuery.provinceid" style="width: 120px" class="filter-item" value-key="key" placeholder="选择省" @change="provinceChange2()">
+        <el-option v-for="item in searchProvinceidList" :key="item.areaid" :label="item.areaname" :value="item.areaid"/>
       </el-select>
-      <el-select v-model="listQuery.classifyid" style="width: 120px" class="filter-item" value-key="key" @change="classifyChange(2)">
-        <el-option v-for="item in classifyids" :key="item.classifyid" :label="item.name" :value="item.classifyid"/>
+      <el-select v-show="searchCityidList.length>0" v-model="listQuery.cityid" style="width: 120px" class="filter-item" value-key="key" placeholder="选择市" @change="cityChange2()">
+        <el-option v-for="item in searchCityidList" :key="item.areaid" :label="item.areaname" :value="item.areaid"/>
       </el-select>
-      <el-input v-model="listQuery.keyword" placeholder="搜索商品" style="width: 200px;" class="filter-item"/>
+      <el-select v-show="searchDistrictidList.length>0" v-model="listQuery.districtid" style="width: 120px" class="filter-item" value-key="key" placeholder="选择县/区" @change="districtChange2()">
+        <el-option v-for="item in searchDistrictidList" :key="item.areaid" :label="item.areaname" :value="item.areaid"/>
+      </el-select>
+      <el-input v-model="listQuery.keyword" placeholder="搜索仓库" style="width: 200px;" class="filter-item"/>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">搜索</el-button>
       <el-button
         class="filter-item"
@@ -40,7 +43,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="仓库编号" width="100px">
+      <el-table-column align="center" label="仓库编号">
         <template slot-scope="scope">
           <span>{{ scope.row.warehousesn }}</span>
         </template>
@@ -77,69 +80,39 @@
       :page-sizes.sync="listQuery.pageSizes"
       @pagination="reGetProduct()"/>
 
-    <el-dialog :title="temp.title" :visible.sync="dialogFormVisible" width="800px">
+    <el-dialog :title="temp.title" :visible.sync="dialogFormVisible" width="700px">
       <el-form
         ref="dataForm"
         :rules="rules"
         :model="temp"
         label-position="left"
-        label-width="110px"
-        style="width: 650px; margin-left:50px;">
-        <el-form-item v-if="dialogStatus==='create'" label="商品类型" prop="goodstype">
-          <el-radio-group v-model="temp.goodstype" @change="deviceTypeEvent">
-            <el-radio v-for="item in isGoodsTypes" :label="item.id" :key="item.id">{{ item.name }}</el-radio>
-          </el-radio-group>
+        label-width="90px"
+        style="width: 550px; margin-left:50px;">
+        <el-form-item label="仓库名称" prop="warehousename">
+          <el-input v-model="temp.warehousename" placeholder="仓库名称"/>
         </el-form-item>
-        <el-row :gutter="50">
-          <el-col :span="12">
-            <el-form-item label="商品条码" prop="barcode">
-              <el-input v-model="temp.barcode" placeholder="商品条码"/>
-            </el-form-item>
-            <el-form-item label="商品名称" prop="goodsname">
-              <el-input v-model="temp.goodsname" placeholder="商品名称"/>
-            </el-form-item>
-            <el-form-item label="商品单位" prop="goodsunit">
-              <el-input v-model="temp.goodsunit" placeholder="商品单位" maxlength="3"/>
-            </el-form-item>
-            <el-form-item label="商品规格">
-              <el-input v-model="temp.goodsspec" placeholder="商品描述"/>
-            </el-form-item>
-            <el-form-item label="商品描述">
-              <el-input v-model="temp.goodsdesc" placeholder="商品描述"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="原价（¥）" prop="price">
-              <el-input v-model="temp.price" placeholder="原价" @input.native="inputChange(1)"/>
-            </el-form-item>
-            <el-form-item label="会员价（¥）" prop="vipprice">
-              <el-input v-model="temp.vipprice" placeholder="会员价" @input.native="inputChange(1)"/>
-            </el-form-item>
-            <el-form-item label="优惠价（¥）" prop="discountsprice">
-              <el-input v-model="temp.discountsprice" placeholder="优惠价" @input.native="inputChange(2)"/>
-            </el-form-item>
-            <el-form-item label="特卖价（¥）" prop="specialsaleprice">
-              <el-input v-model="temp.specialsaleprice" placeholder="特卖价" @input.native="inputChange(1)"/>
-            </el-form-item>
-            <el-form-item label="批发价（¥）" prop="wholesaleprice">
-              <el-input v-model="temp.wholesaleprice" placeholder="批发价" @input.native="inputChange(2)"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="一级分类" prop="pclassifyid">
-          <el-radio-group v-model="temp.pclassifyid">
-            <el-radio
-              v-for="item in oneLevel"
-              :label="item.classifyid"
-              :key="item.classifyid"
-              @change="chooseItem(item)">{{ item.name }}
-            </el-radio>
-          </el-radio-group>
+        <el-form-item label="仓库图片" prop="warehouseimg">
+          <el-input v-model="temp.warehouseimg" placeholder="仓库图片"/>
         </el-form-item>
-        <el-form-item v-if="temp.pclassifyid" label="二级分类" prop="classifyid">
-          <el-radio-group v-model="temp.classifyid">
-            <el-radio v-for="item in twoLevel" :label="item.classifyid" :key="item.classifyid">{{ item.name }}</el-radio>
-          </el-radio-group>
+        <el-form-item label="仓库编号" prop="warehousesn">
+          <el-input v-model="temp.warehousesn" placeholder="仓库编号"/>
+        </el-form-item>
+        <el-form-item label="省市区" prop="districtid">
+          <el-select v-model="temp.provinceid" style="width: 120px" class="filter-item" value-key="key" @change="provinceChange()">
+            <el-option v-for="item in provinceidList" :key="item.areaid" :label="item.areaname" :value="item.areaid"/>
+          </el-select>
+          <el-select v-model="temp.cityid" style="width: 120px" class="filter-item" value-key="key" @change="cityChange()">
+            <el-option v-for="item in cityidList" :key="item.areaid" :label="item.areaname" :value="item.areaid"/>
+          </el-select>
+          <el-select v-model="temp.districtid" style="width: 120px" class="filter-item" value-key="key">
+            <el-option v-for="item in districtidList" :key="item.areaid" :label="item.areaname" :value="item.areaid"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="详情地址" prop="address">
+          <el-input v-model="temp.address" placeholder="详情地址"/>
+        </el-form-item>
+        <el-form-item label="仓库描述">
+          <el-input v-model="temp.warehousedesc" placeholder="仓库描述"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -157,10 +130,8 @@
 
 <script>
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-import { getProductType, addGoods, selectWarehouse, editGoods } from '@/api/warehouse'
-import { getFromData } from '@/utils/OssUtils'
-import { getWebOssToken } from '@/api/upload'
-import axios from 'axios'
+import { insertWarehouse, selectWarehouse, updateWarehouse } from '@/api/warehouse'
+import { findArea } from '@/api/area'
 
 export default {
   name: 'WarehouseList',
@@ -179,228 +150,120 @@ export default {
         limit: 8,
         classifyid: undefined,
         pclassifyid: undefined,
-        pageSizes: [8, 16, 24, 32]
+        pageSizes: [8, 16, 24, 32],
+        provinceid: undefined,
+        cityid: undefined,
+        districtid: undefined
       },
       dialogFormVisible: false,
       temp: {
         id: undefined,
         title: undefined,
-        barcode: undefined,
-        classifyid: undefined,
-        goodscode: undefined,
-        pclassifyid: undefined,
-        goodsname: undefined,
-        goodsimg: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1558976775735&di=358004bb43e13445d62c1166d29b64e4&imgtype=0&src=http%3A%2F%2Fwww.shengyuan.cn%2Fupload%2Fimage%2F201504%2F1291f47e-402c-4106-8296-6ad9ce8e5388.jpg',
-        goodsunit: undefined,
-        ishot: undefined,
-        vipprice: undefined,
-        discountsprice: undefined,
-        specialsaleprice: undefined,
-        wholesaleprice: undefined,
-        price: undefined,
-        goodsdesc: undefined,
-        goodsspec: undefined,
-        goodstype: undefined
+        warehouseid: undefined,
+        warehousename: undefined,
+        warehouseimg: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1936054037,928127912&fm=26&gp=0.jpg',
+        warehousesn: undefined,
+        provinceid: undefined,
+        cityid: undefined,
+        districtid: undefined,
+        address: undefined,
+        warehousedesc: undefined
       },
-      isGoodsTypes: [
-        {
-          id: 1,
-          name: '食品'
-        },
-        {
-          id: 2,
-          name: '用品'
-        },
-        {
-          id: 3,
-          name: '生鲜'
-        }
-      ],
       rules: {
-        pclassifyid: [{ required: true, message: '请选择一级分类', trigger: 'blur' }],
-        classifyid: [{ required: true, message: '请选择二级分类', trigger: 'blur' }],
-        goodstype: [{ required: true, message: '请选择商品类型', trigger: 'blur' }],
-        goodsname: [{ required: true, message: '请输入商品名称', trigger: 'blur' }],
-        barcode: [{ required: true, message: '请输入商品条码', trigger: 'blur' }],
-        goodsunit: [{ required: true, message: '请输入商品单位', trigger: 'blur' }],
-        price: [{ required: true, message: '请输入商品原价', trigger: 'blur' }],
-        vipprice: [{ required: true, message: '请输入商品会员价', trigger: 'blur' }],
-        specialsaleprice: [{ required: true, message: '请输入商品特卖价', trigger: 'blur' }],
-        wholesaleprice: [{ required: true, message: '请输入商品批发价', trigger: 'blur' }],
-        discountsprice: [{ required: true, message: '请输入商品优惠价', trigger: 'blur' }]
+        warehousename: [{ required: true, message: '请输入仓库名称', trigger: 'blur' }],
+        warehouseimg: [{ required: true, message: '请上传仓库图片', trigger: 'blur' }],
+        warehousesn: [{ required: true, message: '请输入仓库编号', trigger: 'blur' }],
+        address: [{ required: true, message: '请输入详细地址', trigger: 'blur' }],
+        warehousedesc: [{ required: true, message: '请输入仓库描述', trigger: 'blur' }],
+        districtid: [{ required: true, message: '请选择省市区', trigger: 'blur' }]
       },
       dialogStatus: undefined,
-      oneLevel: [],
-      twoLevel: [],
-      towName: undefined,
-      imageUrl: '',
-      classifyids: [
-        {
-          name: '二级分类',
-          classifyid: undefined
-        }
-      ],
-      pclassifyids: [
-        {
-          name: '一级分类',
-          classifyid: undefined
-        }
-      ],
-      classifyParentId: undefined
+      provinceidList: [],
+      cityidList: [],
+      districtidList: [],
+      searchProvinceidList: [],
+      searchCityidList: [],
+      searchDistrictidList: []
     }
   },
   created() {
     this.reGetProduct()
-    this.reFindType()
+    this.reFindArea(1, -1)
   },
   methods: {
-    classifyChange(position) {
-      if (position === 1) {
-        this.classifyids = [
-          {
-            name: '二级分类',
-            classifyid: undefined
-          }
-        ]
-        this.listQuery.classifyid = undefined
-        if (this.listQuery.pclassifyid) {
-          this.reTowFindType2()
-        }
+    // 编辑省市区数据
+    provinceChange() {
+      this.reFindArea(2, this.temp.provinceid)
+      this.cityidList = []
+      this.districtidList = []
+      this.temp.cityid = undefined
+      this.temp.districtid = undefined
+    },
+    cityChange() {
+      this.reFindArea(3, this.temp.cityid)
+      this.districtidList = []
+      this.temp.districtid = undefined
+    },
+    // 搜索省市区数据
+    provinceChange2() {
+      if (this.listQuery.provinceid) {
+        this.reFindArea2(2, this.listQuery.provinceid)
       }
-      this.reGetProduct()
+      this.searchCityidList = []
+      this.searchDistrictidList = []
+      this.listQuery.cityid = undefined
+      this.listQuery.districtid = undefined
+      this.search()
     },
-    uploadImage() {
-      var moveDiv = document.getElementById('upload')
-      moveDiv.click()
-    },
-    deviceTypeEvent() {
-      this.oneCheckList = []
-      this.twoCheckList = []
-      this.temp.deviceGoodsType = undefined
-    },
-    inputChange(position) {
-      this.$nextTick(() => {
-        if (position === 1 && this.temp.univalence) {
-          this.temp.univalence = this.temp.univalence.replace(/[^\d.]/g, '') // 清除"数字"和"."以外的字符
-          this.temp.univalence = this.temp.univalence.replace(/^\./g, '') // 验证第一个字符是数字而不是
-          this.temp.univalence = this.temp.univalence.replace(/\.{2,}/g, '.') // 只保留第一个. 清除多余的
-          this.temp.univalence = this.temp.univalence.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.')
-          this.temp.univalence = this.temp.univalence.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3') // 只能输入n位小数
-        } else if (position === 2 && this.temp.vipPrice) {
-          this.temp.vipPrice = this.temp.vipPrice.replace(/[^\d.]/g, '') // 清除"数字"和"."以外的字符
-          this.temp.vipPrice = this.temp.vipPrice.replace(/^\./g, '') // 验证第一个字符是数字而不是
-          this.temp.vipPrice = this.temp.vipPrice.replace(/\.{2,}/g, '.') // 只保留第一个. 清除多余的
-          this.temp.vipPrice = this.temp.vipPrice.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.')
-          this.temp.vipPrice = this.temp.vipPrice.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3') // 只能输入n位小数
-        }
-      })
-    },
-    selectFile() {
-      const files = document.getElementById('upload')
-      if (files.files) {
-        const fileLen = document.getElementById('upload').files
-        for (let i = 0; i < fileLen.length; i++) {
-          const file = fileLen[i]
-          getWebOssToken().then(response => {
-            var result = response.data
-            var fromData = getFromData(result, file)
-            return new Promise((resolve, reject) => {
-              axios({
-                url: result.host,
-                method: 'post',
-                data: fromData,
-                headers: { 'Content-Type': 'multipart/form-data' }
-              })
-                .then((res) => {
-                  this.temp.picture = result.host + '/' + fromData.get('key')
-                })
-            })
-          })
-        }
+    cityChange2() {
+      if (this.listQuery.cityid) {
+        this.reFindArea2(3, this.listQuery.cityid)
       }
+      this.searchDistrictidList = []
+      this.listQuery.districtid = undefined
+      this.search()
+    },
+    districtChange2() {
+      this.search()
     },
     search() {
       this.listQuery.page = 1
       this.reGetProduct()
     },
     handleCreate() {
-      this.temp.title = '添加商品'
+      this.temp.title = '添加仓库'
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
-      this.temp.barcode = undefined
-      this.temp.classifyid = undefined
-      this.temp.goodscode = undefined
-      this.temp.pclassifyid = undefined
-      this.temp.goodsname = undefined
-      this.temp.goodsimg = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1558976775735&di=358004bb43e13445d62c1166d29b64e4&imgtype=0&src=http%3A%2F%2Fwww.shengyuan.cn%2Fupload%2Fimage%2F201504%2F1291f47e-402c-4106-8296-6ad9ce8e5388.jpg'
-      this.temp.goodsunit = undefined
-      this.temp.ishot = undefined
-      this.temp.vipprice = undefined
-      this.temp.discountsprice = undefined
-      this.temp.specialsaleprice = undefined
-      this.temp.wholesaleprice = undefined
-      this.temp.price = undefined
-      this.temp.goodsdesc = undefined
-      this.temp.goodsspec = undefined
-      this.temp.goodstype = undefined
-      this.twoLevel = []
-      this.classifyParentId = undefined
+      this.temp.warehouseid = undefined
+      this.temp.warehousename = undefined
+      this.temp.warehouseimg = 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1936054037,928127912&fm=26&gp=0.jpg'
+      this.temp.warehousesn = undefined
+      this.temp.provinceid = undefined
+      this.temp.cityid = undefined
+      this.temp.districtid = undefined
+      this.temp.address = undefined
+      this.temp.warehousedesc = undefined
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
     handleEdit(item) {
-      this.temp.title = '编辑商品'
+      this.temp.title = '编辑仓库'
       this.dialogStatus = 'edit'
       this.dialogFormVisible = true
-      this.temp.barcode = item.barcode
-      this.temp.classifyid = item.classifyid
-      this.temp.pclassifyid = item.pclassifyid
-      this.temp.goodscode = item.goodscode
-      this.temp.goodsname = item.goodsname
-      this.temp.goodsimg = item.goodsimg
-      this.temp.goodsunit = item.goodsunit
-      this.temp.ishot = item.ishot
-      this.temp.vipprice = item.vipprice
-      this.temp.discountsprice = item.discountsprice
-      this.temp.specialsaleprice = item.specialsaleprice
-      this.temp.wholesaleprice = item.wholesaleprice
-      this.temp.price = item.price
-      this.temp.goodsdesc = item.goodsdesc
-      this.temp.goodsspec = item.goodsspec
-      this.temp.goodstype = item.goodstype
-      this.twoLevel = []
-      this.classifyParentId = item.pclassifyid
-      this.reTowFindType()
+      this.temp.warehouseid = item.warehouseid
+      this.temp.warehousename = item.warehousename
+      this.temp.warehouseimg = item.warehouseimg
+      this.temp.warehousesn = item.warehousesn
+      this.temp.provinceid = item.provinceid
+      this.temp.cityid = item.cityid
+      this.temp.districtid = item.districtid
+      this.temp.address = item.address
+      this.temp.warehousedesc = item.warehousedesc
+      this.reFindArea(2, this.temp.provinceid)
+      this.reFindArea(3, this.temp.cityid)
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
-      })
-    },
-    // 查询分类
-    reFindType() {
-      getProductType('0').then(response => {
-        this.oneLevel = response.data
-        var alldata = [{
-          name: '一级分类',
-          classifyid: undefined
-        }]
-        this.pclassifyids = alldata.concat(response.data)
-      })
-    },
-    // 查询分类
-    reTowFindType() {
-      getProductType(this.classifyParentId).then(response => {
-        this.twoLevel = response.data
-      })
-    },
-    // 查询分类
-    reTowFindType2() {
-      getProductType(this.listQuery.pclassifyid).then(response => {
-        var alldata = [{
-          name: '二级分类',
-          classifyid: undefined
-        }]
-        this.classifyids = alldata.concat(response.data)
       })
     },
     // 查询商品
@@ -410,11 +273,11 @@ export default {
         this.total = response.data.total
       })
     },
-    // 添加商品
+    // 添加仓库
     reAddGoods() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          addGoods(this.temp).then(response => {
+          insertWarehouse(this.temp).then(response => {
             this.$message({
               message: '添加成功',
               type: 'success'
@@ -429,11 +292,11 @@ export default {
         }
       })
     },
-    // 编辑商品
+    // 编辑仓库
     reEditGoods() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          editGoods(this.temp).then(response => {
+          updateWarehouse(this.temp).then(response => {
             this.reGetProduct()
             this.dialogFormVisible = false
             this.$message({
@@ -444,68 +307,52 @@ export default {
         }
       })
     },
-    // 上下架商品
-    rePutaway(item) {
-      if (item.isSale === 1) {
-        this.temp.isSale = 0
-      } else {
-        this.temp.isSale = 1
-      }
-      this.temp.goodsId = item.id
-      this.temp.name = undefined
-      this.temp.goodsDesc = undefined
-      this.temp.picture = undefined
-      this.temp.univalence = undefined
-      this.temp.vipPrice = undefined
-      this.temp.deleted = undefined
-      this.temp.goodsCatsIdSet = undefined
-      editGoods(this.temp).then(response => {
-        this.reGetProduct()
-        if (item.isSale === 1) {
-          this.$message({
-            message: '下架成功',
-            type: 'success'
-          })
-        } else {
-          this.$message({
-            message: '上架成功',
-            type: 'success'
-          })
+    // 获取省市区
+    reFindArea(level, parentId) {
+      findArea(parentId).then(response => {
+        if (level === 1) {
+          var data = response.data
+          this.provinceidList = data
+          var tempData = [
+            {
+              areaname: '全部省',
+              areaid: undefined
+            }
+          ]
+          this.searchProvinceidList = tempData.concat(data)
+        } else if (level === 2) {
+          this.cityidList = response.data
+        } else if (level === 3) {
+          this.districtidList = response.data
         }
       })
     },
-    // 删除商品
-    reDelete(item) {
-      this.temp.deleted = 1
-      this.temp.goodsId = item.id
-      this.temp.name = undefined
-      this.temp.goodsDesc = undefined
-      this.temp.picture = undefined
-      this.temp.univalence = undefined
-      this.temp.vipPrice = undefined
-      this.temp.isSale = undefined
-      this.temp.goodsCatsIdSet = undefined
-      editGoods(this.temp).then(response => {
-        this.reGetProduct()
-        this.$message({
-          message: '删除成功',
-          type: 'success'
-        })
+    // 获取省市区
+    reFindArea2(level, parentId) {
+      findArea(parentId).then(response => {
+        var tempData = []
+        if (level === 2) {
+          tempData = [
+            {
+              areaname: '全部市',
+              areaid: undefined
+            }
+          ]
+          this.searchCityidList = tempData.concat(response.data)
+        } else if (level === 3) {
+          tempData = [
+            {
+              areaname: '全部县/区',
+              areaid: undefined
+            }
+          ]
+          this.searchDistrictidList = tempData.concat(response.data)
+        }
       })
-    },
-    chooseItem(item) {
-      this.temp.classifyid = undefined
-      this.classifyParentId = item.classifyid
-      this.reTowFindType()
     }
   }
 }
 </script>
 
 <style scoped>
-  .avatar {
-    width: 150px;
-    height: 150px;
-    display: block;
-  }
 </style>
