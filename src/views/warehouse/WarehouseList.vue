@@ -78,7 +78,7 @@
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
       :page-sizes.sync="listQuery.pageSizes"
-      @pagination="reGetProduct()"/>
+      @pagination="findAll()"/>
 
     <el-dialog :title="temp.title" :visible.sync="dialogFormVisible" width="700px">
       <el-form
@@ -130,7 +130,7 @@
 
 <script>
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-import { insertWarehouse, selectWarehouse, updateWarehouse } from '@/api/warehouse'
+import { insertWarehouse, selectWarehouse, updateWarehouse, deleteWarehouse } from '@/api/warehouse'
 import { findArea } from '@/api/area'
 
 export default {
@@ -187,7 +187,7 @@ export default {
     }
   },
   created() {
-    this.reGetProduct()
+    this.findAll()
     this.reFindArea(1, -1)
   },
   methods: {
@@ -228,7 +228,7 @@ export default {
     },
     search() {
       this.listQuery.page = 1
-      this.reGetProduct()
+      this.findAll()
     },
     handleCreate() {
       this.temp.title = '添加仓库'
@@ -267,7 +267,7 @@ export default {
       })
     },
     // 查询商品
-    reGetProduct() {
+    findAll() {
       selectWarehouse(this.listQuery).then(response => {
         this.list = response.data.rows
         this.total = response.data.total
@@ -287,7 +287,7 @@ export default {
             this.listQuery.classifyid = undefined
             this.listQuery.pclassifyid = undefined
             this.dialogFormVisible = false
-            this.reGetProduct()
+            this.findAll()
           })
         }
       })
@@ -297,7 +297,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           updateWarehouse(this.temp).then(response => {
-            this.reGetProduct()
+            this.findAll()
             this.dialogFormVisible = false
             this.$message({
               message: '修改成功',
@@ -348,6 +348,18 @@ export default {
           ]
           this.searchDistrictidList = tempData.concat(response.data)
         }
+      })
+    },
+    // 删除用户
+    reDelete(item) {
+      this.listLoading = true
+      deleteWarehouse(item.warehouseid).then(response => {
+        this.listLoading = false
+        this.findAll()
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
       })
     }
   }

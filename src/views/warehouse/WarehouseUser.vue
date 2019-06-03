@@ -317,7 +317,7 @@ export default {
         }
       })
     },
-    // 删除商品
+    // 删除用户
     reDelete(item) {
       this.listLoading = true
       deleteWarehouseUser(item.userid).then(response => {

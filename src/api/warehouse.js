@@ -52,6 +52,16 @@ export function updateWarehouse(temp) {
     }
   })
 }
+// 删除仓库
+export function deleteWarehouse(warehouseid) {
+  return request({
+    url: '/api/admin/deleteWarehouse',
+    method: 'post',
+    params: {
+      warehouseid: warehouseid
+    }
+  })
+}
 
 // 查询仓库用户
 export function selectWarehouseUser(temp) {
