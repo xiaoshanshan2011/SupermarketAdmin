@@ -125,3 +125,25 @@ export function deleteWarehouseUser(userid) {
     }
   })
 }
+
+// 查询指定仓库用户
+export function selectWarehouseUserRelevance(warehouseid) {
+  return request({
+    url: '/api/admin/selectWarehouseUserRelevance',
+    method: 'get',
+    params: {
+      warehouseid: warehouseid
+    }
+  })
+}
+
+// 删除指定仓库用户
+export function deleteWarehouseUserRelevance(id) {
+  return request({
+    url: '/api/admin/deleteWarehouseUserRelevance',
+    method: 'post',
+    params: {
+      id: id
+    }
+  })
+}

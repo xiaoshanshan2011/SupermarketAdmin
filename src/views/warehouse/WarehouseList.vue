@@ -43,7 +43,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="仓库编号">
+      <el-table-column align="center" label="仓库编号" width="100px">
         <template slot-scope="scope">
           <span>{{ scope.row.warehousesn }}</span>
         </template>
@@ -63,8 +63,9 @@
           <span>{{ scope.row.updatetime }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="200px">
+      <el-table-column align="center" label="操作" width="280px">
         <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="lookWarehouseUser(scope.row.warehouseid)">仓库成员</el-button>
           <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
           <el-button type="danger" icon="el-icon-delete" size="mini" @click="reDelete(scope.row)">删除</el-button>
         </template>
@@ -120,6 +121,64 @@
         <el-button type="primary" @click="dialogStatus==='create'?reAddGoods():reEditGoods()">确定</el-button>
       </div>
     </el-dialog>
+
+    <!--仓库成员 start -->
+    <el-dialog :visible.sync="warehouseUserVisible" title="仓库成员" width="900px">
+      <div class="filter-container">
+        <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 10px" type="primary" icon="el-icon-edit" @click="handleCreateChild()">添加成员</el-button>
+      </div>
+      <el-table v-loading="listLoading" :data="warehouseUserList" border fit highlight-current-row style="width: 100%">
+
+        <el-table-column align="center" label="序号" width="100px">
+          <template slot-scope="scope">
+            <span>{{ scope.$index + 1 }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="用户图片" width="130px">
+          <template slot-scope="scope">
+            <img :src="scope.row.warehouseUser.userphoto" style="height: 50px" @click="dialogPictureVisible = true,clickPicture = scope.row.warehouseUser.userphoto">
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="用户名称">
+          <template slot-scope="scope">
+            <span>{{ scope.row.warehouseUser.username }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="用户类型">
+          <template slot-scope="scope">
+            <div v-if="scope.row.warehouseUser.warehouseUserRelevance">
+              <span v-if="scope.row.warehouseUser.warehouseUserRelevance.usertype === 1">仓库管理员</span>
+              <span v-else-if="scope.row.warehouseUser.warehouseUserRelevance.usertype === 2">配送员</span>
+              <span v-else-if="scope.row.warehouseUser.warehouseUserRelevance.usertype === 3">采购员</span>
+            </div>
+            <div v-else>无</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="用户昵称">
+          <template slot-scope="scope">
+            <span v-if="scope.row.warehouseUser.nickname.length <= 10">{{ scope.row.warehouseUser.nickname }}</span>
+            <span v-else>{{ scope.row.warehouseUser.nickname.substr(0, 10) }}...</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="手机号码">
+          <template slot-scope="scope">
+            <span>{{ scope.row.warehouseUser.mobile }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="操作" width="200px">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="reWarehouseUserDelete(scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+
+      </el-table>
+    </el-dialog>
+    <!--仓库成员 end -->
+
     <el-dialog :visible.sync="dialogPictureVisible" width="1000px">
       <div style="display: flex;align-items: center;justify-content: center">
         <img :src="clickPicture" style="height: 500px">
@@ -130,7 +189,7 @@
 
 <script>
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-import { insertWarehouse, selectWarehouse, updateWarehouse, deleteWarehouse } from '@/api/warehouse'
+import { insertWarehouse, selectWarehouse, updateWarehouse, deleteWarehouse, selectWarehouseUserRelevance, deleteWarehouseUserRelevance } from '@/api/warehouse'
 import { findArea } from '@/api/area'
 
 export default {
@@ -138,6 +197,7 @@ export default {
   components: { Pagination },
   data() {
     return {
+      warehouseUserVisible: false,
       clickPicture: undefined,
       dialogPictureVisible: false,
       list: [],
@@ -183,7 +243,9 @@ export default {
       districtidList: [],
       searchProvinceidList: [],
       searchCityidList: [],
-      searchDistrictidList: []
+      searchDistrictidList: [],
+      warehouseUserList: [], // 仓库用户
+      warehouseid: undefined // 选中的仓库
     }
   },
   created() {
@@ -360,6 +422,22 @@ export default {
           message: '删除成功',
           type: 'success'
         })
+      })
+    },
+    lookWarehouseUser(warehouseid) {
+      this.warehouseid = warehouseid
+      this.warehouseUserVisible = true
+      this.listLoading = true
+      selectWarehouseUserRelevance(warehouseid).then(response => {
+        this.listLoading = false
+        this.warehouseUserList = response.data
+      })
+    },
+    reWarehouseUserDelete(id) {
+      this.listLoading = true
+      deleteWarehouseUserRelevance(id).then(response => {
+        this.listLoading = false
+        this.lookWarehouseUser(this.warehouseid)
       })
     }
   }
