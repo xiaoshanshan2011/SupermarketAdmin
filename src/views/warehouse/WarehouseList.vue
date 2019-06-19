@@ -36,6 +36,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" label="仓库编号" width="100px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.warehousesn }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="仓库名称">
         <template slot-scope="scope">
           <span v-if="scope.row.warehousename.length <= 10">{{ scope.row.warehousename }}</span>
@@ -43,11 +49,6 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="仓库编号" width="100px">
-        <template slot-scope="scope">
-          <span>{{ scope.row.warehousesn }}</span>
-        </template>
-      </el-table-column>
       <el-table-column align="center" label="仓库地址">
         <template slot-scope="scope">
           <span>{{ scope.row.province.areaname }} {{ scope.row.city.areaname }} {{ scope.row.district.areaname }} {{ scope.row.address }}</span>
@@ -63,11 +64,23 @@
           <span>{{ scope.row.updatetime }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="280px">
+      <el-table-column align="center" label="操作1" width="160px">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="lookWarehouseUser(scope.row.warehouseid)">仓库成员</el-button>
-          <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini" @click="reDelete(scope.row)">删除</el-button>
+          <div>
+            <el-button style="width: 100px" type="primary" size="mini" @click="reSynchronizedPlatformGoods(scope.row.warehouseid)">同步平台商品</el-button>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="操作2" width="240px">
+        <template slot-scope="scope">
+          <div style="margin-top: 10px;">
+            <el-button style="width: 80px" type="primary" size="mini" @click="lookWarehouseGoods(scope.row.warehousesn)">仓库库存</el-button>
+            <el-button style="width: 80px" type="primary" size="mini" @click="lookWarehouseUser(scope.row.warehouseid)">仓库成员</el-button>
+          </div>
+          <div style="margin-top: 10px;">
+            <el-button style="width: 80px" type="success" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button style="width: 80px" type="danger" icon="el-icon-delete" size="mini" @click="reDelete(scope.row)">删除</el-button>
+          </div>
         </template>
       </el-table-column>
 
@@ -189,7 +202,7 @@
 
 <script>
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-import { insertWarehouse, selectWarehouse, updateWarehouse, deleteWarehouse, selectWarehouseUserRelevance, deleteWarehouseUserRelevance } from '@/api/warehouse'
+import { insertWarehouse, selectWarehouse, updateWarehouse, deleteWarehouse, selectWarehouseUserRelevance, deleteWarehouseUserRelevance, synchronizedPlatformGoods } from '@/api/warehouse'
 import { findArea } from '@/api/area'
 
 export default {
@@ -424,6 +437,7 @@ export default {
         })
       })
     },
+    // 查看仓库用户
     lookWarehouseUser(warehouseid) {
       this.warehouseid = warehouseid
       this.warehouseUserVisible = true
@@ -433,6 +447,26 @@ export default {
         this.warehouseUserList = response.data
       })
     },
+    // 查看库存商品
+    lookWarehouseGoods(warehousesn) {
+      this.$router.push({
+        path: 'warehousegoodslist',
+        name: 'WarehouseGoodsList',
+        params: {
+          warehousesn: warehousesn
+        }
+      })
+    },
+    // 同步平台商品
+    reSynchronizedPlatformGoods(warehouseid) {
+      synchronizedPlatformGoods(warehouseid).then(response => {
+        this.$message({
+          message: '同步成功',
+          type: 'success'
+        })
+      })
+    },
+    // 删除仓库用户
     reWarehouseUserDelete(id) {
       this.listLoading = true
       deleteWarehouseUserRelevance(id).then(response => {

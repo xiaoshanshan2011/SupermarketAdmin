@@ -334,6 +334,34 @@ export const asyncRouterMap = [
         name: 'WarehouseList',
         component: () => import('@/views/warehouse/WarehouseList'),
         meta: { title: '仓库列表', icon: 'order' }
+      },
+      {
+        path: 'warehousegoodslist',
+        name: 'WarehouseGoodsList',
+        component: () => import('@/views/warehouse/WarehouseGoodsList'),
+        meta: { title: '库存查询', icon: 'order' }
+      }
+    ]
+  },
+  // 店铺管理
+  {
+    path: '/warehouse',
+    component: Layout,
+    redirect: '/warehouse/WarehouseList',
+    name: 'WarehouseList',
+    meta: { title: '店铺管理', icon: 'order' },
+    children: [
+      {
+        path: 'warehouseuser',
+        name: 'WarehouseUser',
+        component: () => import('@/views/warehouse/WarehouseUser'),
+        meta: { title: '店铺用户', icon: 'types' }
+      },
+      {
+        path: 'warehouselist',
+        name: 'WarehouseList',
+        component: () => import('@/views/warehouse/WarehouseList'),
+        meta: { title: '店铺列表', icon: 'order' }
       }
     ]
   },

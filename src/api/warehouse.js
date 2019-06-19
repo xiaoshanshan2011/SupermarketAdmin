@@ -147,3 +147,44 @@ export function deleteWarehouseUserRelevance(id) {
     }
   })
 }
+
+// 同步平台商品
+export function synchronizedPlatformGoods(warehouseid) {
+  return request({
+    url: '/api/admin/synchronizedPlatformGoods',
+    method: 'post',
+    params: {
+      warehouseid: warehouseid
+    }
+  })
+}
+
+// 获取仓库存库商品列表
+export function adminSelectWarehouseGoods(temp) {
+  return request({
+    url: '/api/admin/selectWarehouseGoods',
+    method: 'GET',
+    params: {
+      warehousesn: temp.warehousesn,
+      keyword: temp.keyword, // , false
+      limit: temp.limit, // , false
+      page: temp.page // , false
+    }
+  })
+}
+
+// 更新仓库存库商品
+export function adminUpdateWarehouseGoods(temp) {
+  return request({
+    url: '/api/admin/updateWarehouseGoods',
+    method: 'POST',
+    params: {
+      discountsprice: temp.discountsprice, // , false
+      id: temp.id, // , false
+      price: temp.price, // , false
+      specialsaleprice: temp.specialsaleprice, // , false
+      vipprice: temp.vipprice, // , false
+      wholesaleprice: temp.wholesaleprice // , false
+    }
+  })
+}
